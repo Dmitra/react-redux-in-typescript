@@ -8,18 +8,21 @@ import { CaseReducerActions } from '@reduxjs/toolkit/src/createSlice'
 export const createFeature = <
     T,
     Reducers extends SliceCaseReducers<T>,
-    Selectors
+    Selectors,
+    Model,
     >({
     name,
     initialState,
     reducers,
     selectors,
+    model,
   }: {
   name: string;
   initialState: T;
   reducers: ValidateSliceCaseReducers<T, Reducers>;
   selectors: Selectors;
-}): { actions: CaseReducerActions<Reducers>, reducer: Reducer<T>, select: Selectors } => {
+  model: Model,
+}): { actions: CaseReducerActions<Reducers>, reducer: Reducer<T>, select: Selectors, model: Model } => {
   const slice = createSlice({
     name,
     initialState,
@@ -30,5 +33,6 @@ export const createFeature = <
     actions: slice.actions,
     reducer: slice.reducer,
     select: selectors,
+    model,
   }
 }

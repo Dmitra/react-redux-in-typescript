@@ -2,8 +2,8 @@ import { DeepReadonly } from 'ts-essentials'
 import { AnyAction, PayloadAction as BasicPayloadAction } from '@reduxjs/toolkit'
 // import type { RootState } from 'boot/state'
 
-import type { AppState } from 'features/app/model'
-import type { DocState } from 'features/doc/model'
+import type { State as AppState } from 'features/app/model'
+import type { State as DocState } from 'features/doc/model'
 
 export type RootState = {
   app: AppState,

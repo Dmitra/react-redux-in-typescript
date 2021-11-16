@@ -2,6 +2,6 @@ export type Document = {
   id: string,
 }
 
-export type DocState = {
+export type State = {
   list: Document[],
 }

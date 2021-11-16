@@ -3,7 +3,7 @@ export enum AREA {
   DOC = 'DOC',
 }
 
-export type AppState = {
+export type State = {
   loading: (keyof typeof AREA)[],
 }
 
