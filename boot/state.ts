@@ -1,30 +1,36 @@
 import App from 'features/app'
 import Doc from 'features/doc'
 
-import { FeatureNames, FeatureName, RootState, Action } from 'model'
-import { Draft } from '@reduxjs/toolkit'
+import { FeatureNames, FeatureName, RootState } from 'model'
+import { Draft, PayloadAction, Reducer } from '@reduxjs/toolkit'
 
-const reducers = {
+const reducers: { [Feature in FeatureName]: Reducer<RootState[Feature]> } = {
   app: App.reducer,
   doc: Doc.reducer,
-} as const
+}
 
-// export const Features = ['app', 'doc']
-
-export default function combination (state = {} as Draft<RootState>, action: Action) {
+export default function combination (state = {} as Draft<RootState>, action: PayloadAction) {
   action.global = state
-  const nextState = {} as RootState
 
-  // _.each(reducers, (reducer, key: Feature) => {
-  //   nextState[key] = reducer(state[key], action)
-  // })
-  for (let i = 0; i < FeatureNames.length; i++) {
-    const key = FeatureNames[i]
-    nextState[key] = reducers[key](state[key], action)
-  }
+  const nextState: RootState = FeatureNames.reduce((nextStateDraft, featureName) => {
+    return {
+      ...nextStateDraft,
+      [featureName]: reducers[featureName](state[featureName], action),
+    }
+  }, {} as RootState)
 
   action.next = nextState
   return nextState
 }
+//
+// function getFeatureState<F extends FeatureName,
+//     FeatureState = (typeof reducers)[F] extends Reducer<infer T> ?
+//         WritableDraft<T> : WritableDraft<RootState>>
+// (rootState: WritableDraft<RootState>, featureName: F): FeatureState {
+//   if (featureName in rootState) {
+//     return rootState[featureName]
+//   }
+//   return rootState
+// }
 
 // export type RootState = ReturnType<typeof combination>

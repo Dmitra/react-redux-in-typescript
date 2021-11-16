@@ -8,7 +8,7 @@ export function* onBoot () {
   while (true) {
     yield take(App.actions.boot.type)
     const batch = []
-    batch.push(App.actions.toggleLoading('app'))
+    batch.push(App.actions.toggleLoading('APP'))
     batch.push(Doc.actions.load({ id: 'foo' }))
 
     yield put(batchActions(batch))

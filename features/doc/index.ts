@@ -1,8 +1,9 @@
 import { createFeature } from 'utils'
-import * as model from './model'
-import initialState, * as reducers from './state'
+import * as state from './state'
 import * as selectors from './selectors'
 
+const { initialState, ...reducers } = state
+
 export default createFeature({
-  name: 'doc', model, initialState, reducers, selectors,
+  name: 'doc', initialState, reducers: { ...reducers }, selectors,
 })

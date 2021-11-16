@@ -1,6 +1,6 @@
-export const AREA = {
-  APP: 'APP',
-  DOC: 'DOC',
+export enum AREA {
+  APP = 'APP',
+  DOC = 'DOC',
 }
 
 export type AppState = {

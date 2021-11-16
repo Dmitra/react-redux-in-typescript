@@ -5,9 +5,9 @@ import Doc from 'features/doc'
 
 export function* onLoad () {
   while (true) {
-    const { global } = yield take(Doc.actions.list.type)
+    const { global } = yield take(Doc.actions.load.type)
     const loading = App.select.loading(global)
-    if (_.includes(loading, 'app')) yield put(App.actions.toggleLoading('doc'))
+    if (_.includes(loading, 'app')) yield put(App.actions.toggleLoading('DOC'))
   }
 }
 

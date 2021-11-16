@@ -1,10 +1,10 @@
-import { Action } from 'model'
+import { PayloadAction } from '@reduxjs/toolkit'
 import type { DocState, Document } from './model'
 
-export default {
+export const initialState: DocState = {
   list: [],
-} as DocState
+}
 
-export function load (state: DocState, { payload: doc }: Action<Document>) {
+export function load (state: DocState, { payload: doc }: PayloadAction<Document>) {
   state.list.push(doc)
 }
