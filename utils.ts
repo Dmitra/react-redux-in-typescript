@@ -1,28 +1,33 @@
-import {
-  createSlice,
-  ValidateSliceCaseReducers,
-  SliceCaseReducers, Reducer,
-} from '@reduxjs/toolkit'
-import { CaseReducerActions } from '@reduxjs/toolkit/src/createSlice'
+import type { Reducer } from 'redux'
+import { createSlice, SliceCaseReducers, CaseReducerActions } from 'utils/createSlice'
 
 export const createFeature = <
-    T,
-    Reducers extends SliceCaseReducers<T>,
-    Selectors,
-    Model,
-    >({
+  T,
+  Model,
+  Reducers extends SliceCaseReducers<T>,
+  Selectors,
+  Utils,
+>({
     name,
+    model,
     initialState,
     reducers,
     selectors,
-    model,
+    utils,
   }: {
   name: string;
   initialState: T;
-  reducers: ValidateSliceCaseReducers<T, Reducers>;
+  reducers: Reducers;
   selectors: Selectors;
   model: Model,
-}): { actions: CaseReducerActions<Reducers>, reducer: Reducer<T>, select: Selectors, model: Model } => {
+  utils?: Utils,
+}): {
+  model: Model,
+  actions: CaseReducerActions<Reducers>,
+  reducer: Reducer<T>,
+  select: Selectors,
+  utils?: Utils
+} => {
   const slice = createSlice({
     name,
     initialState,
@@ -30,9 +35,10 @@ export const createFeature = <
   })
 
   return {
+    model,
     actions: slice.actions,
     reducer: slice.reducer,
     select: selectors,
-    model,
+    utils,
   }
 }
