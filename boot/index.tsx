@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import '@babel/polyfill'
 import React from 'react'
 import { render } from 'react-dom'
@@ -35,9 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
   )
 })
 
-// export type RootState = ReturnType<typeof store.getState>
 export const useSelector: TypedUseSelectorHook<RootState> = useSelectorReact
-// export const useSelector: TypedUseSelectorHook<CustomRootState> = useSelectorHook
 export const useDispatch = () => useDispatchReact<typeof store.dispatch>()
 
 sagaMiddleware.run(effects)
