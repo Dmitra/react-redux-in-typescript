@@ -16,11 +16,9 @@ export default function DocumentList () {
   return (
     <div className={styles}>
       { !!list.length && <List component="div">
-        {_.map(list, (doc, i) => {
-          return (
-            <ListItem key={doc.id}/>
-          )
-        })}
+        {_.map(list, (doc, i) => (
+          <ListItem key={doc.id}/>
+        ))}
       </List>}
     </div>
   )

@@ -1,10 +1,12 @@
 import type { Reducer } from 'redux'
-import { createSlice, SliceCaseReducers, CaseReducerActions } from 'utils/createSlice'
+import { createSlice } from 'utils/createSlice'
+import { ReducersBySlice, ActionCreatorsBySlice, CaseReducer } from 'utils/createReducer'
 
 export const createFeature = <
   T,
   Model,
-  Reducers extends SliceCaseReducers<T>,
+  // TODO seems to be incompatible with Reducer type from redux
+  Reducers extends ReducersBySlice<T>,
   Selectors,
   Utils,
 >({
@@ -23,7 +25,7 @@ export const createFeature = <
   utils?: Utils,
 }): {
   model: Model,
-  actions: CaseReducerActions<Reducers>,
+  actions: ActionCreatorsBySlice<Reducers>,
   reducer: Reducer<T>,
   select: Selectors,
   utils?: Utils

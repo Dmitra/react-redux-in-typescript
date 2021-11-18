@@ -1,3 +1,5 @@
+export type NoInfer<T> = [T][T extends any ? 0 : never]
+
 export type IsAny<T, True, False = never> =
 // test if we are going the left AND right path in the condition
     true | false extends (T extends never ? true : false) ? True : False
