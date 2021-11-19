@@ -9,9 +9,9 @@ export type RootState = {
 export type Action<P = undefined, M = undefined> = {
   type: string,
   payload: P,
-  global: RootState,
-  next: RootState,
-  meta: M,
+  global?: RootState,
+  next?: RootState,
+  meta?: M,
 }
 
 export type ActionCreator<P = undefined, M = undefined> = {

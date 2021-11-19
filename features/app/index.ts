@@ -1,9 +1,9 @@
 import { createFeature } from 'utils'
-import * as model from './model'
-import initialState, * as reducers from './state'
-import * as selectors from './selectors'
+import { initialState, reducers } from './state'
+import { selectors } from './selectors'
+import { AppModel, AppState } from './model'
 
-const feature = createFeature({ name: 'app', model, initialState, reducers, selectors })
+const feature = createFeature<AppState, typeof reducers>({ name: 'app', model: AppModel, initialState, reducers, selectors })
 
 export default feature
 
