@@ -1,8 +1,11 @@
+import { Reducer } from 'redux'
 import App from 'features/app'
 import Doc from 'features/doc'
 import { Action, RootState } from 'model'
 
-const reducers = {
+type Reducers = Record<keyof RootState, Reducer<any>>
+
+const reducers: Reducers = {
   app: App.reducer,
   doc: Doc.reducer,
 }
@@ -12,13 +15,10 @@ export default function combination<Payload, Meta>(state: RootState, action: Act
   const nextState = state
 
   _.each(reducers, (reducer, key) => {
-    // Можем заигнорить следующую линию, потому что в _.each переменная key всегда будет string
-    // и привести к правильным типам будет сложно. Но здесь мы уверены, что ключи существуют
-    // и соответствуют своим значениям, потому что вот же мы их перебираем в этом же цикле.
-    // @ts-ignore next-line
-    nextState[key] = reducer(state[key], action)
+    nextState[key as keyof Reducers] = reducer(state[key as keyof Reducers], action)
   })
 
   action.next = nextState
+
   return nextState
 }

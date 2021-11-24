@@ -1,4 +1,4 @@
-export const AppModel = {
+export const AREA = {
   APP: 'APP',
   DOC: 'DOC',
   // as const означает, что в качестве значений ключей
@@ -6,7 +6,7 @@ export const AppModel = {
 } as const
 
 export type AppState = {
-  loading: (keyof typeof AppModel)[],
+  loading: (keyof typeof AREA)[],
 }
 
 export const palette = {
