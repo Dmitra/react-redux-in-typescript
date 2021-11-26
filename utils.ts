@@ -68,7 +68,7 @@ export function createFeature<State, Reducers extends SliceCaseReducers<State>>(
     model,
     actions,
     reducer: slice.reducer,
-    selectors,
+    select: selectors,
     components: model?.COMPONENTS,
   }
 }
