@@ -38,7 +38,7 @@ export const createFeature = <
 
   return {
     model,
-    actions: slice.actions,
+    actions: slice.actions as ActionCreatorsBySlice<T, Reducers>,
     reducer: slice.reducer,
     select: selectors,
     utils,

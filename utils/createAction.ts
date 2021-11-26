@@ -4,48 +4,48 @@ import type { IfMaybeUndefined, IfVoid, IsAny, IsUnknown } from './tsHelpers'
 
 export type PayloadAction<
   _Payload = void,
+  _Meta = void,
   _Type extends string = string,
   _State = void,
-  _Meta = never,
-  _Error = never
   > = {
   payload: _Payload
+  meta: _Meta
   type: _Type
   global: _State,
   next: _State,
-} &
-  ([_Error] extends [never]
-    ? {}
-    : {
-      error: _Error
-    })
+}
 
 export type Actions<_Type extends keyof any = string> = Record<_Type, BaseAction>
 
 interface BaseActionCreator<_Payload, _Type extends string, _Meta = never, _Error = never> {
   type: _Type
-  match: (action: BaseAction<unknown>) => action is PayloadAction<_Payload, _Type, _Meta, _Error>
+  match: (action: BaseAction<unknown>) => action is PayloadAction<_Payload, _Meta, _Type, _Error>
 }
 
-export interface ActionCreatorWithPayload<_Payload, _Type extends string = string>
+export interface ActionCreatorWithPayload<_Payload, _Type extends string = string, _Meta = void>
   extends BaseActionCreator<_Payload, _Type> {
-  (payload: _Payload): PayloadAction<_Payload, _Type>
+  (payload: _Payload): PayloadAction<_Payload, _Meta, _Type>
 }
 
-export interface ActionCreatorWithOptionalPayload<_Payload, _Type extends string = string>
+export interface ActionCreatorWithOptionalPayload<
+  _Payload,
+  _Type extends string = string,
+  _Meta = void
+  >
   extends BaseActionCreator<_Payload, _Type> {
-  (payload?: _Payload): PayloadAction<_Payload, _Type>
+  (payload?: _Payload): PayloadAction<_Payload, _Meta, _Type>
 }
 
 export interface ActionCreatorWithNonInferrablePayload<
-  _Type extends string = string
+  _Type extends string = string,
+  _Meta = void
   > extends BaseActionCreator<unknown, _Type> {
-  <_Payload>(payload: _Payload): PayloadAction<_Payload, _Type>
+  <_Payload>(payload: _Payload): PayloadAction<_Payload, _Meta, _Type>
 }
 
-export interface ActionCreatorWithoutPayload<_Type extends string = string>
+export interface ActionCreatorWithoutPayload<_Type extends string = string, _Meta = void>
   extends BaseActionCreator<undefined, _Type> {
-  (): PayloadAction<undefined, _Type>
+  (): PayloadAction<undefined, _Meta, _Type>
 }
 
 export type PayloadActionCreator<
@@ -87,7 +87,9 @@ export function createAction (type: string): any {
 
   actionCreator.toString = () => `${type}`
   actionCreator.type = type
-  actionCreator.match = (action: BaseAction<unknown>): action is PayloadAction => action.type === type
+  actionCreator.match = (action: BaseAction<unknown>): action is PayloadAction => (
+    action.type === type
+  )
 
   return actionCreator
 }

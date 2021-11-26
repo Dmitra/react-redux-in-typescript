@@ -10,7 +10,10 @@ const reducers: { [Feature in FeatureName]: Reducer<RootState[Feature]> } = {
   doc: Doc.reducer,
 }
 
-export default function combination<T> (state = {} as Draft<RootState>, action: PayloadAction<Draft<RootState>, string, Draft<RootState>>) {
+export default function combination<T> (
+  state = {} as Draft<RootState>,
+  action: PayloadAction<Draft<RootState>, any, string, Draft<RootState>>
+) {
   action.global = state
   const nextState = {} as any
 

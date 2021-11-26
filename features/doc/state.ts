@@ -5,6 +5,7 @@ export const initialState: State = {
   list: [],
 }
 
-export function load (state: State, { payload: doc }: PayloadAction<Document>) {
-  state.list.push(doc)
+export function load (state: State, action: PayloadAction<Document, boolean>) {
+  const { payload: doc, meta: waitForApp } = action
+  if (!waitForApp) state.list.push(doc)
 }
