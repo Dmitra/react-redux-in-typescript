@@ -3,7 +3,7 @@ import Doc from 'features/doc'
 
 import { FeatureName, RootState } from 'model'
 import { Draft, Reducer } from '@reduxjs/toolkit'
-import { PayloadAction } from '../utils/createAction'
+import { Action } from '../utils/createAction'
 
 const reducers: { [Feature in FeatureName]: Reducer<RootState[Feature]> } = {
   app: App.reducer,
@@ -12,7 +12,7 @@ const reducers: { [Feature in FeatureName]: Reducer<RootState[Feature]> } = {
 
 export default function combination<T> (
   state = {} as Draft<RootState>,
-  action: PayloadAction<Draft<RootState>, any, string, Draft<RootState>>
+  action: Action<Draft<RootState>, any, string, Draft<RootState>>,
 ) {
   action.global = state
   const nextState = {} as any

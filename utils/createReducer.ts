@@ -1,20 +1,20 @@
 import type { Draft } from 'immer'
 import createNextState, { isDraft, isDraftable } from 'immer'
-import type { AnyAction, Action, Reducer } from 'redux'
+import type { AnyAction, Action as BaseAction, Reducer } from 'redux'
 
-import type { Actions, PayloadAction, ActionCreatorForCaseReducer } from './createAction'
+import type { Actions, Action, ActionCreatorForCaseReducer } from './createAction'
 
-export type DraftReducer<_State = any, _Action extends Action = AnyAction> = (
+export type DraftReducer<_State = any, _Action extends BaseAction = AnyAction> = (
   state: Draft<_State>,
   action: _Action
 ) => _State | void | Draft<_State>
 
 export type DraftReducers<_State, _Actions extends Actions> = {
-  [T in keyof _Actions]: _Actions[T] extends Action ? DraftReducer<_State, _Actions[T]> : void
+  [T in keyof _Actions]: _Actions[T] extends BaseAction ? DraftReducer<_State, _Actions[T]> : void
 }
 
 export type ReducersBySlice<_State> = {
-  [SliceName: string]: | DraftReducer<_State, PayloadAction<any>>
+  [SliceName: string]: DraftReducer<_State, Action<any, any>>
 }
 // setup relationship between ActionCreator and Reducer
 export type ActionCreatorsBySlice<_State, _ReducersBySlice extends ReducersBySlice<_State>> = {

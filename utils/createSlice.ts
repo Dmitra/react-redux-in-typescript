@@ -16,7 +16,7 @@ export interface SliceOptions<
   name: Name
   initialState: State
   reducers: ReducersBySlice<State>
-  extraReducers?: | DraftReducers<NoInfer<State>, any>
+  extraReducers?: DraftReducers<NoInfer<State>, any>
 }
 
 export interface Slice<
