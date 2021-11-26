@@ -1,6 +1,6 @@
 import type { Reducer } from 'redux'
 import { createSlice } from 'utils/createSlice'
-import { ReducersBySlice, ActionCreatorsBySlice, CaseReducer } from 'utils/createReducer'
+import { ReducersBySlice, ActionCreatorsBySlice } from 'utils/createReducer'
 
 export const createFeature = <
   T,
@@ -25,7 +25,7 @@ export const createFeature = <
   utils?: Utils,
 }): {
   model: Model,
-  actions: ActionCreatorsBySlice<Reducers>,
+  actions: ActionCreatorsBySlice<T, Reducers>,
   reducer: Reducer<T>,
   select: Selectors,
   utils?: Utils

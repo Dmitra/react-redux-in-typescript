@@ -1,4 +1,4 @@
-import { PayloadAction } from '../../utils/createSlice'
+import { PayloadAction } from 'utils/createAction'
 import type { State, Document } from './model'
 
 export const initialState: State = {

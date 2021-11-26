@@ -1,79 +1,82 @@
-import type { Action } from 'redux'
+import type { Action as BaseAction } from 'redux'
 
 import type { IfMaybeUndefined, IfVoid, IsAny, IsUnknown } from './tsHelpers'
 
-export type Actions<T extends keyof any = string> = Record<T, Action>
-
 export type PayloadAction<
-  P = void,
-  T extends string = string,
-  M = never,
-  E = never
+  _Payload = void,
+  _Type extends string = string,
+  _State = void,
+  _Meta = never,
+  _Error = never
   > = {
-  payload: P
-  type: T
-} & ([M] extends [never]
-  ? {}
-  : {
-    meta: M
-  }) &
-  ([E] extends [never]
+  payload: _Payload
+  type: _Type
+  global: _State,
+  next: _State,
+} &
+  ([_Error] extends [never]
     ? {}
     : {
-      error: E
+      error: _Error
     })
 
-interface BaseActionCreator<P, T extends string, M = never, E = never> {
-  type: T
-  match: (action: Action<unknown>) => action is PayloadAction<P, T, M, E>
+export type Actions<_Type extends keyof any = string> = Record<_Type, BaseAction>
+
+interface BaseActionCreator<_Payload, _Type extends string, _Meta = never, _Error = never> {
+  type: _Type
+  match: (action: BaseAction<unknown>) => action is PayloadAction<_Payload, _Type, _Meta, _Error>
 }
 
-export interface ActionCreatorWithPayload<P, T extends string = string>
-  extends BaseActionCreator<P, T> {
-  (payload: P): PayloadAction<P, T>
+export interface ActionCreatorWithPayload<_Payload, _Type extends string = string>
+  extends BaseActionCreator<_Payload, _Type> {
+  (payload: _Payload): PayloadAction<_Payload, _Type>
 }
 
-export interface ActionCreatorWithOptionalPayload<P, T extends string = string>
-  extends BaseActionCreator<P, T> {
-  (payload?: P): PayloadAction<P, T>
+export interface ActionCreatorWithOptionalPayload<_Payload, _Type extends string = string>
+  extends BaseActionCreator<_Payload, _Type> {
+  (payload?: _Payload): PayloadAction<_Payload, _Type>
 }
 
 export interface ActionCreatorWithNonInferrablePayload<
-  T extends string = string
-  > extends BaseActionCreator<unknown, T> {
-  <PT>(payload: PT): PayloadAction<PT, T>
+  _Type extends string = string
+  > extends BaseActionCreator<unknown, _Type> {
+  <_Payload>(payload: _Payload): PayloadAction<_Payload, _Type>
 }
 
-export interface ActionCreatorWithoutPayload<T extends string = string>
-  extends BaseActionCreator<undefined, T> {
-  (): PayloadAction<undefined, T>
+export interface ActionCreatorWithoutPayload<_Type extends string = string>
+  extends BaseActionCreator<undefined, _Type> {
+  (): PayloadAction<undefined, _Type>
 }
 
 export type PayloadActionCreator<
-  P = void,
-  T extends string = string,
+  _Payload = void,
+  _Type extends string = string,
   > = IsAny<
-  P,
-  ActionCreatorWithPayload<any, T>,
+  _Payload,
+  ActionCreatorWithPayload<any, _Type>,
   IsUnknown<
-    P,
-    ActionCreatorWithNonInferrablePayload<T>,
+    _Payload,
+    ActionCreatorWithNonInferrablePayload<_Type>,
     // else
     IfVoid<
-      P,
-      ActionCreatorWithoutPayload<T>,
+      _Payload,
+      ActionCreatorWithoutPayload<_Type>,
       // else
-      IfMaybeUndefined<P, ActionCreatorWithOptionalPayload<P, T>, ActionCreatorWithPayload<P, T>>
+      IfMaybeUndefined<
+        _Payload,
+        ActionCreatorWithOptionalPayload<_Payload, _Type>,
+        ActionCreatorWithPayload<_Payload, _Type>
+        >
       >
     >
   >
 
-export type ActionCreatorForCaseReducer<CR> = CR extends (
-    state: any,
-    action: infer A
+export type ActionCreatorForCaseReducer<_State, _CaseReducer> = _CaseReducer extends (
+    state: _State,
+    action: infer _Action
   ) => any
-  ? A extends { payload: infer P }
-    ? PayloadActionCreator<P>
+  ? _Action extends { payload: infer _Payload }
+    ? PayloadActionCreator<_Payload>
     : ActionCreatorWithoutPayload
   : ActionCreatorWithoutPayload
 
@@ -84,7 +87,7 @@ export function createAction (type: string): any {
 
   actionCreator.toString = () => `${type}`
   actionCreator.type = type
-  actionCreator.match = (action: Action<unknown>): action is PayloadAction => action.type === type
+  actionCreator.match = (action: BaseAction<unknown>): action is PayloadAction => action.type === type
 
   return actionCreator
 }

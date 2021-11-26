@@ -4,38 +4,40 @@ import type { AnyAction, Action, Reducer } from 'redux'
 
 import type { Actions, PayloadAction, ActionCreatorForCaseReducer } from './createAction'
 
-export type CaseReducer<S = any, A extends Action = AnyAction> = (
-  state: Draft<S>,
-  action: A
-) => S | void | Draft<S>
+export type DraftReducer<_State = any, _Action extends Action = AnyAction> = (
+  state: Draft<_State>,
+  action: _Action
+) => _State | void | Draft<_State>
 
-export type CaseReducers<S, _Actions extends Actions> = {
-  [T in keyof _Actions]: _Actions[T] extends Action ? CaseReducer<S, _Actions[T]> : void
+export type DraftReducers<_State, _Actions extends Actions> = {
+  [T in keyof _Actions]: _Actions[T] extends Action ? DraftReducer<_State, _Actions[T]> : void
 }
 
-export type ReducersBySlice<State> = {
-  [Name: string]: | CaseReducer<State, PayloadAction<any>>
+export type ReducersBySlice<_State> = {
+  [SliceName: string]: | DraftReducer<_State, PayloadAction<any>>
 }
 // setup relationship between ActionCreator and Reducer
-export type ActionCreatorsBySlice<_ReducersBySlice extends ReducersBySlice<any>> = {
-  [Type in keyof _ReducersBySlice]: ActionCreatorForCaseReducer<_ReducersBySlice[Type]>
+export type ActionCreatorsBySlice<_State, _ReducersBySlice extends ReducersBySlice<_State>> = {
+  [SliceName in keyof _ReducersBySlice]: ActionCreatorForCaseReducer<_State, _ReducersBySlice[SliceName]>
 }
 
-export function createReducer<S, CR extends CaseReducers<S, any> = CaseReducers<S, any>>
-(initialState: S, actionsMap: CR): Reducer<S> {
+export function createReducer<
+  _State, _CaseReducers extends DraftReducers<_State, any> = DraftReducers<_State, any>
+  >
+(initialState: _State, actionsMap: _CaseReducers): Reducer<_State> {
   const frozenInitialState = createNextState(initialState, () => {})
 
-  return function (state = frozenInitialState, action): S {
+  return function (state = frozenInitialState, action): _State {
     const caseReducers = [actionsMap[action.type]]
 
-    return caseReducers.reduce((previousState, caseReducer): S => {
+    return caseReducers.reduce((previousState, caseReducer): _State => {
       if (caseReducer) {
         if (isDraft(previousState)) {
-          const draft = previousState as Draft<S>
+          const draft = previousState as Draft<_State>
           const result = caseReducer(draft, action)
 
           if (typeof result === 'undefined') return previousState
-          return result as S
+          return result as _State
         }
         if (!isDraftable(previousState)) {
           const result = caseReducer(previousState as any, action)
@@ -45,11 +47,11 @@ export function createReducer<S, CR extends CaseReducers<S, any> = CaseReducers<
             throw Error('A case reducer on a non-draftable value must not return undefined')
           }
 
-          return result as S
+          return result as _State
         }
         // @ts-ignore createNextState() produces an Immutable<Draft<S>> rather
         // than an Immutable<S>, and TypeScript cannot find out how to reconcile these two types.
-        return createNextState(previousState, (draft: Draft<S>) => caseReducer(draft, action))
+        return createNextState(previousState, (draft: Draft<_State>) => caseReducer(draft, action))
       }
 
       return previousState

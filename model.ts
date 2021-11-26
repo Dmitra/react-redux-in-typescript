@@ -1,4 +1,3 @@
-import { DeepReadonly } from 'ts-essentials'
 import { AnyAction, PayloadAction as BasicPayloadAction } from '@reduxjs/toolkit'
 // import type { RootState } from 'boot/state'
 

@@ -14,7 +14,6 @@ export default function UI () {
   const loading = useSelector(App.select.loading)
   const isLoading = _.isEmpty(loading)
 
-
   return (
     <StyledEngineProvider injectFirst>
       <div className={styles}>

@@ -1,15 +1,16 @@
 import App from 'features/app'
 import Doc from 'features/doc'
 
-import { Action, FeatureNames, FeatureName, RootState } from 'model'
-import { Draft, PayloadAction, Reducer } from '@reduxjs/toolkit'
+import { FeatureName, RootState } from 'model'
+import { Draft, Reducer } from '@reduxjs/toolkit'
+import { PayloadAction } from '../utils/createAction'
 
 const reducers: { [Feature in FeatureName]: Reducer<RootState[Feature]> } = {
   app: App.reducer,
   doc: Doc.reducer,
 }
 
-export default function combination<T> (state = {} as Draft<RootState>, action: Action) {
+export default function combination<T> (state = {} as Draft<RootState>, action: PayloadAction<Draft<RootState>, string, Draft<RootState>>) {
   action.global = state
   const nextState = {} as any
 
