@@ -18,7 +18,7 @@ export default function combination<T> (
   action.global = state
   const nextState = {} as any
 
-  const names = ['app', 'doc'] as const
+  const names = Object.keys(reducers) as unknown as (keyof RootState)[]
   for (let i = 0; i < names.length; i++) {
     const name: keyof RootState = names[i]
     const sliceState = state[name] as unknown as T
