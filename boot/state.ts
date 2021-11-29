@@ -2,7 +2,8 @@ import App from 'features/app'
 import Doc from 'features/doc'
 
 import { FeatureName, RootState } from 'model'
-import { Draft, Reducer } from '@reduxjs/toolkit'
+import { Draft } from 'immer'
+import { Reducer } from 'redux'
 import { Action } from '../utils/createAction'
 
 const reducers: { [Feature in FeatureName]: Reducer<RootState[Feature]> } = {
