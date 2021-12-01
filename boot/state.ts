@@ -3,14 +3,17 @@ import App from 'features/app'
 import Doc from 'features/doc'
 import { Action, RootState } from 'model'
 
-type Reducers = Record<keyof RootState, Reducer<any>>
+type Reducers = Record<keyof RootState, Reducer>
 
 const reducers: Reducers = {
   app: App.reducer,
   doc: Doc.reducer,
 }
 
-export default function combination<Payload, Meta>(state: RootState, action: Action<Payload, Meta>): RootState {
+export default function combination<Payload, Meta> (
+  state: RootState,
+  action: Action<Payload, Meta>,
+): RootState {
   action.global = state
   const nextState = state
 

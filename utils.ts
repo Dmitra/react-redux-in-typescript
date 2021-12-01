@@ -28,40 +28,68 @@
 //   }
 // }
 
-import { createSlice, ValidateSliceCaseReducers, SliceCaseReducers } from '@reduxjs/toolkit'
-import { ActionCreator, RootState } from 'model'
+import {
+  createSlice,
+  SliceCaseReducers,
+  CreateSliceOptions,
+  CaseReducerActions,
+  Reducer,
+} from '@reduxjs/toolkit'
+import { Action, ActionCreator, RootState } from 'model'
 
-interface CreateFeatureParams<State, Reducers extends SliceCaseReducers<State>, Model extends {} = {}> {
-  name?: string,
-  model?: Model,
-  initialState: State,
-  reducers: ValidateSliceCaseReducers<State, Reducers>,
-  selectors: Record<string, (state: RootState) => any>,
+type CreateFeatureParams<
+  State,
+  Reducers extends SliceCaseReducers<State>,
+  Model extends Record<string, unknown> = Record<string, unknown>
+> = CreateSliceOptions<State, Reducers> & {
+  model?: Model
+  selectors: Record<string, (state: RootState) => any>
 }
 
-export function createFeature<State, Reducers extends SliceCaseReducers<State>>({
+type FeatureActions<State, Reducers extends SliceCaseReducers<State>> = Record<
+  keyof CaseReducerActions<Reducers>,
+  ActionCreator<any, any>
+>
+
+export function createFeature<
+  State,
+  Reducers extends SliceCaseReducers<State>,
+  Model extends Record<string, unknown> = Record<string, unknown>
+> ({
   name = '',
   model,
   initialState,
   reducers,
   selectors,
-}: CreateFeatureParams<State, Reducers>) {
+  extraReducers,
+}: CreateFeatureParams<State, Reducers, Model>): {
+  model?: Model,
+  actions: FeatureActions<State, Reducers>,
+  reducer: Reducer<State>,
+  select: Record<string, (state: RootState) => unknown>,
+  components: unknown,
+} {
   const slice = createSlice<State, Reducers, string>({
     name,
     initialState,
     reducers,
-    extraReducers: reducers?.extraReducers,
+    extraReducers,
   })
 
-  const actions = slice.actions
+  const actions: FeatureActions<State, Reducers> = slice.actions
+
   _.each(slice.actions, (actionCreator, key) => {
-    const newActionCreator = (payload, meta) => {
-      const action = actionCreator(payload)
-      if (!_.isNil(meta)) action.meta = meta
-      return { ...action, meta }
+    if (_.isFunction(actionCreator)) {
+      const newActionCreator: ActionCreator<ReturnType<typeof actionCreator>['payload'], any> = (payload, meta) => {
+        const action: Action<typeof payload, typeof meta> = actionCreator(payload)
+        if (!_.isNil(meta)) action.meta = meta
+
+        return { ...action, meta }
+      }
+
+      newActionCreator.type = actionCreator.type
+      actions[key as keyof CaseReducerActions<Reducers>] = newActionCreator
     }
-    newActionCreator.type = actionCreator.type
-    actions[key] = newActionCreator
   })
 
   return {

@@ -24,5 +24,5 @@ function toggleLoading (state: AppState, { payload }: Action<keyof typeof AREA>)
 
 export const reducers = {
   boot,
-  toggleLoading, 
+  toggleLoading,
 }
