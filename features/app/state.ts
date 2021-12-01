@@ -1,20 +1,28 @@
 import { Action } from 'model'
-import * as AppModel from 'features/app/model'
-import * as AppSelectors from 'features/app/selectors'
-import { AppState } from './model'
+import * as selectors from 'features/app/selectors'
+import { AppState, AREA } from './model'
 
-const App = { model: AppModel, select: AppSelectors }
+// Здесь App.select нигде не использовался, как я понял,
+// поэтому не уверен, что этот объект вообще нужен.
+const App = { model: AREA, select: selectors }
 
+// Здесь не совсем корректно делать тайпкаст. Лучше объявить
+// переменную с типом AppState и потом отдельно ее экспортировать
 export default {
-  loading: [App.model.AREA.APP, App.model.AREA.DOC],
+  loading: [AREA.APP, AREA.DOC],
 } as AppState
 
-export function boot (state: AppState, action: Action) {
+function boot (state: AppState) {
   state.loading.length = 0
 }
 
-export function toggleLoading (state: AppState, { payload }: Action<keyof typeof App.model.AREA>) {
+function toggleLoading (state: AppState, { payload }: Action<keyof typeof AREA>) {
   const loading = state.loading
   if (_.includes(loading, payload)) state.loading = _.without(loading, payload)
   else loading.push(payload)
+}
+
+export const reducers = {
+  boot,
+  toggleLoading,
 }
