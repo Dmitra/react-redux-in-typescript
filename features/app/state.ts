@@ -10,10 +10,16 @@ export default {
 } as AppState
 
 export function boot (state: AppState, action: Action) {
+  const { global } = action
+  // TODO ensure right type for global
+  App.select.loading(global)
   state.loading.length = 0
 }
 
-export function toggleLoading (state: AppState, { payload }: Action<keyof typeof App.model.AREA>) {
+export function toggleLoading (state: AppState, action: Action<keyof typeof App.model.AREA, boolean>) {
+  const { meta, payload } = action
+  if (meta) return
+
   const loading = state.loading
   if (_.includes(loading, payload)) state.loading = _.without(loading, payload)
   else loading.push(payload)

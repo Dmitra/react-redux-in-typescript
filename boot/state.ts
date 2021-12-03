@@ -5,7 +5,7 @@ const reducers = {
   app: App.reducer,
   doc: Doc.reducer,
 }
-
+// TODO
 export default function combination (state, action) {
   action.global = state
   const nextState = {}

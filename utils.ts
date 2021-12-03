@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 
+// TODO
 export function createFeature ({ name, model, initialState, reducers, selectors }) {
   const slice = createSlice({
     name,

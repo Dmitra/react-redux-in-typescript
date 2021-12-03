@@ -38,4 +38,5 @@ export const useSelector: TypedUseSelectorHook<RootState> = useSelectorReact
 export const useDispatch = () => useDispatchReact<typeof store.dispatch>()
 
 sagaMiddleware.run(effects)
+// TODO
 store.dispatch(App.actions.boot())

@@ -7,6 +7,7 @@ import App from 'features/app'
 import Doc from 'features/doc'
 
 const styles = css`
+  // TODO
   border: 1px solid ${App.model.palette.main};
 `
 export default function DocumentList () {
@@ -15,7 +16,7 @@ export default function DocumentList () {
 
   return (
     <div className={styles}>
-      { !!list.length && <List component="div">
+      { !!list.length && <List>
         {_.map(list, (doc, i) => {
           return (
             <ListItem key={doc.id}/>
