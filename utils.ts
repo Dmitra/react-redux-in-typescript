@@ -46,10 +46,13 @@ type CreateFeatureParams<
   selectors: Record<string, (state: RootState) => any>
 }
 
-type FeatureActions<State, Reducers extends SliceCaseReducers<State>> = Record<
-  keyof CaseReducerActions<Reducers>,
-  ActionCreator<any, any>
->
+type FeatureActions<State, Reducers extends SliceCaseReducers<State>> = {
+  [key in keyof CaseReducerActions<Reducers>]: CaseReducerActions<Reducers>[key] extends (
+    ...args: any[]
+  ) => any
+    ? ActionCreator<ReturnType<CaseReducerActions<Reducers>[key]>['payload']>
+    : never
+}
 
 export function createFeature<
   State,
@@ -63,11 +66,11 @@ export function createFeature<
   selectors,
   extraReducers,
 }: CreateFeatureParams<State, Reducers, Model>): {
-  model?: Model,
-  actions: FeatureActions<State, Reducers>,
-  reducer: Reducer<State>,
-  select: Record<string, (state: RootState) => unknown>,
-  components: unknown,
+  model?: Model
+  actions: FeatureActions<State, Reducers>
+  reducer: Reducer<State>
+  select: Record<string, (state: RootState) => any>
+  components: unknown
 } {
   const slice = createSlice<State, Reducers, string>({
     name,
@@ -76,11 +79,13 @@ export function createFeature<
     extraReducers,
   })
 
-  const actions: FeatureActions<State, Reducers> = slice.actions
+  const actions = {} as FeatureActions<State, Reducers>
 
   _.each(slice.actions, (actionCreator, key) => {
     if (_.isFunction(actionCreator)) {
-      const newActionCreator: ActionCreator<ReturnType<typeof actionCreator>['payload'], any> = (payload, meta) => {
+      const newActionCreator: ActionCreator<
+        ReturnType<typeof actionCreator>['payload']
+      > = (payload, meta) => {
         const action: Action<typeof payload, typeof meta> = actionCreator(payload)
         if (!_.isNil(meta)) action.meta = meta
 
@@ -88,6 +93,10 @@ export function createFeature<
       }
 
       newActionCreator.type = actionCreator.type
+      // Тут бессмысленная ошибка тайпскрипта.
+      // Он почему-то не понимает что мы внутри этого цикла и правильный
+      // ключ всегда будет в наличии
+      // @ts-ignore next-line
       actions[key as keyof CaseReducerActions<Reducers>] = newActionCreator
     }
   })

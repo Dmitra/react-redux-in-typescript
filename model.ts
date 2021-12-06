@@ -6,7 +6,7 @@ export type RootState = {
   doc: DocState,
 }
 
-export type Action<P = undefined, M = undefined> = {
+export type Action<P = unknown, M = unknown> = {
   type: string,
   payload: P,
   global?: RootState,
@@ -14,7 +14,7 @@ export type Action<P = undefined, M = undefined> = {
   meta?: M,
 }
 
-export type ActionCreator<P = undefined, M = undefined> = {
+export type ActionCreator<P = unknown, M = unknown> = {
   type: string
   (payload?: P, meta?: M): Action<P, M>
 }

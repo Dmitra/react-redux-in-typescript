@@ -8,7 +8,7 @@ export function* onLoad () {
     const { global } = yield take(Doc.actions.load.type)
     // selector should have type
     const loading = App.select.loading(global)
-    if (_.includes(loading, 'app')) yield put(App.actions.toggleLoading('doc'))
+    if (_.includes(loading, 'app')) yield put(App.actions.toggleLoading('DOC'))
   }
 }
 
