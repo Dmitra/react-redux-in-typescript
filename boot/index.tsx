@@ -20,6 +20,7 @@ const middleware = [
 ]
 
 export const store = configureStore({
+  // TODO
   reducer,
   middleware,
   devTools: true,
